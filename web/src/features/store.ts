@@ -5,16 +5,19 @@ import {
   Action,
 } from "@reduxjs/toolkit";
 import counterReducer from "./counter/counterSlice";
+import loginReducer from "./auth/LoginPage/slice";
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
 
 const rootReducer = combineReducers({
   counter: counterReducer,
+  login: loginReducer,
 });
 
 const persistConfig = {
   key: "root",
   storage,
+  whitelist: ["login"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

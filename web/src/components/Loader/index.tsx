@@ -1,7 +1,7 @@
 import React from "react";
 
-function index() {
-  return <div>index</div>;
+function Loader(): React.ReactElement {
+  return <div>Loading...</div>;
 }
 
-export default index;
+export default Loader;

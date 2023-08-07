@@ -8,17 +8,22 @@ import {
   ObjectType,
   Query,
   Resolver,
+  UseMiddleware,
 } from "type-graphql";
 import {
   generateAccessToken,
   generateRefreshToken,
+  sendRefreshToken,
 } from "../helpers/generateToken";
 import { Request, Response } from "express";
-import { CONST } from "../constants/strings";
+import { AppDataSource } from "../data-source";
+import { isAuth } from "../helpers/isAuth";
+// import { JwtPayload } from "jsonwebtoken";
 
 export interface MyContext {
   req: Request;
   res: Response;
+  tokenPayload?: any;
 }
 
 @ObjectType()
@@ -35,6 +40,19 @@ export class UserResolver {
   @Query(() => String)
   hello() {
     return "Hello WORLD11";
+  }
+
+  @Query(() => User)
+  @UseMiddleware(isAuth)
+  async me(@Ctx() ctx: MyContext) {
+    const payload = ctx.tokenPayload;
+    if (!payload) return null;
+    try {
+      const user = await User.findOne({ where: { id: payload.userId } });
+      return user;
+    } catch (error) {
+      return error;
+    }
   }
 
   @Mutation(() => Boolean)
@@ -71,9 +89,7 @@ export class UserResolver {
       const accessToken = generateAccessToken(findUser);
       const refreshToken = generateRefreshToken(findUser);
 
-      res.cookie(CONST.JWT_COOKIE, refreshToken, {
-        httpOnly: true,
-      });
+      sendRefreshToken(res, refreshToken);
 
       return {
         access_token: accessToken,
@@ -82,5 +98,15 @@ export class UserResolver {
     } catch (error: any) {
       throw new Error(error);
     }
+  }
+
+  @Mutation(() => Boolean)
+  async revokeUserSession(@Arg("userId") userId: string) {
+    await AppDataSource.getRepository(User).increment(
+      { id: userId! },
+      "token_version", // one of user column
+      1
+    );
+    return true;
   }
 }

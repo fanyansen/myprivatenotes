@@ -1,6 +1,5 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense } from "react";
 import { LazyExoticComponent } from "react";
-import { ReactNode } from "react";
 
 // type LoadableProps = (
 //   Component: LazyExoticComponent<React.FC>

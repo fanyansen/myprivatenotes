@@ -8,6 +8,8 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { store, persistor } from "./features/store";
 import { PersistGate } from "redux-persist/integration/react";
+import { ApolloProvider } from "@apollo/client";
+import client from "./lib/api";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -15,7 +17,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <Provider store={store}>
     <PersistGate loading={"loading..."} persistor={persistor}>
-      <App />
+      <ApolloProvider client={client}>
+        <App />
+      </ApolloProvider>
     </PersistGate>
   </Provider>
 );

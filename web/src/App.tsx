@@ -1,13 +1,13 @@
 import React from "react";
-import { Provider } from "react-redux";
-import logo from "./logo.svg";
 import "./App.css";
+import { BrowserRouter } from "react-router-dom";
+import Routes from "./routes";
 
-function App() {
+function App(): React.ReactElement {
   return (
-    <div className="App">
-      <h2>GraphQL APP</h2>
-    </div>
+    <BrowserRouter>
+      <Routes />
+    </BrowserRouter>
   );
 }
 
