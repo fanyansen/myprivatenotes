@@ -1,4 +1,4 @@
-import { AppDataSource } from "./data-source";
+import { AppDataSource } from "./lib/dataSource";
 import express from "express";
 import { CONST } from "./constants/strings";
 // import { User } from "./entity/User"
@@ -18,6 +18,7 @@ import { verify } from "jsonwebtoken";
 import { User } from "./entity/User";
 import { generateAccessToken, sendRefreshToken } from "./helpers/generateToken";
 import cookieParser from "cookie-parser";
+import { NoteResolver } from "./graphql/NoteResolver";
 
 const LOCAL_PLAYGROUND = () =>
   ApolloServerPluginLandingPageGraphQLPlayground({
@@ -100,7 +101,7 @@ AppDataSource.initialize()
       // },
 
       schema: await buildSchema({
-        resolvers: [UserResolver],
+        resolvers: [UserResolver, NoteResolver],
       }),
       context: ({ req, res }: MyContext): MyContext => ({ req, res }),
       introspection: process.env.NODE_ENV !== "production",

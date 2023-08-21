@@ -1,5 +1,12 @@
 import { ObjectType, Field, Int } from "type-graphql";
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  BaseEntity,
+  OneToMany,
+} from "typeorm";
+import { Note } from "./Note";
 
 @ObjectType()
 @Entity()
@@ -22,4 +29,7 @@ export class User extends BaseEntity {
   @Field(() => Int)
   @Column("int", { default: 0 })
   token_version: number;
+
+  @OneToMany(() => Note, (note) => note.created_by)
+  notes: Note[];
 }

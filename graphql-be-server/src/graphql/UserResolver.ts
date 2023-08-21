@@ -16,14 +16,20 @@ import {
   sendRefreshToken,
 } from "../helpers/generateToken";
 import { Request, Response } from "express";
-import { AppDataSource } from "../data-source";
+import { AppDataSource } from "../lib/dataSource";
 import { isAuth } from "../helpers/isAuth";
+import { JwtPayload } from "jsonwebtoken";
 // import { JwtPayload } from "jsonwebtoken";
+
+export interface TokenPayload extends JwtPayload {
+  userId: string;
+  tokenVersion?: number;
+}
 
 export interface MyContext {
   req: Request;
   res: Response;
-  tokenPayload?: any;
+  tokenPayload?: TokenPayload;
 }
 
 @ObjectType()

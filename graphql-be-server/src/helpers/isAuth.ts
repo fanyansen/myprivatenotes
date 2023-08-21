@@ -1,7 +1,7 @@
 import { verify } from "jsonwebtoken";
 import { CONST } from "../constants/strings";
 import { MiddlewareFn } from "type-graphql";
-import { MyContext } from "../graphql/UserResolver";
+import { MyContext, TokenPayload } from "../graphql/UserResolver";
 
 export const isAuth: MiddlewareFn<MyContext> = ({ context }, next) => {
   try {
@@ -13,7 +13,7 @@ export const isAuth: MiddlewareFn<MyContext> = ({ context }, next) => {
     const tokenPayload = verify(token, CONST.ACCESS_TOKEN_SECRET);
     if (!tokenPayload) throw new Error("Not Authenticated");
 
-    context.tokenPayload = tokenPayload;
+    context.tokenPayload = tokenPayload as TokenPayload;
   } catch (error) {
     throw new Error("Not Authenticated");
   }
