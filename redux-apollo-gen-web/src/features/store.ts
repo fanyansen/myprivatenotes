@@ -6,12 +6,14 @@ import {
 } from "@reduxjs/toolkit";
 import counterReducer from "./counter/counterSlice";
 import loginReducer from "./auth/LoginPage/slice";
+import signUpReducer from "./auth/SignupPage/slice";
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
 
 const rootReducer = combineReducers({
   counter: counterReducer,
   login: loginReducer,
+  signUp: signUpReducer,
 });
 
 const persistConfig = {

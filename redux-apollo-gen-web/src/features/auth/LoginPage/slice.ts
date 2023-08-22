@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { LoginResponse } from "../../../generated/graphql";
-import { LoginState, UserLogin } from "./type";
+import { LoginState, UserLogin } from "./types";
 import { PickNullable } from "../../../types/custom";
 import { RootState } from "../../store";
 
@@ -58,6 +58,7 @@ const userLoginSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.loading = false;
+        state.error = null;
 
         console.log(action.payload);
         state.data = action.payload;

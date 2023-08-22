@@ -117,4 +117,4 @@ AppDataSource.initialize()
       console.log(`Server running on http://localhost:${CONST.PORT}/graphql`)
     );
   })
-  .catch((error) => console.log(error));
+  .catch((error) => console.error(error));

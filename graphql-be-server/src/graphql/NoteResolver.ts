@@ -46,8 +46,9 @@ export class NoteResolver {
 
       await newNote.save();
       return newNote;
-    } catch (error: any) {
-      throw new Error(error);
+    } catch (error) {
+      const catchError = error as Error;
+      throw new Error(catchError.message);
     }
   }
 
@@ -74,8 +75,9 @@ export class NoteResolver {
 
       await note?.save();
       return note;
-    } catch (error: any) {
-      throw new Error(error);
+    } catch (error) {
+      const catchError = error as Error;
+      throw new Error(catchError.message);
     }
   }
 
@@ -92,8 +94,9 @@ export class NoteResolver {
 
       await note?.remove();
       return true;
-    } catch (error: any) {
-      throw new Error(error);
+    } catch (error) {
+      const catchError = error as Error;
+      throw new Error(catchError.message);
     }
   }
 }

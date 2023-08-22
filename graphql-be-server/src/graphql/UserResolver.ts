@@ -48,6 +48,12 @@ export class UserResolver {
     return "Hello WORLD11";
   }
 
+  @Query(() => [User])
+  @UseMiddleware(isAuth)
+  async listUser() {
+    return User.find({});
+  }
+
   @Query(() => User)
   @UseMiddleware(isAuth)
   async me(@Ctx() ctx: MyContext) {
@@ -74,8 +80,9 @@ export class UserResolver {
       });
 
       return true;
-    } catch (error: any) {
-      throw new Error(error);
+    } catch (error) {
+      const catchError = error as Error;
+      throw new Error(catchError.message);
     }
   }
 
@@ -101,8 +108,9 @@ export class UserResolver {
         access_token: accessToken,
         refresh_token: refreshToken,
       };
-    } catch (error: any) {
-      throw new Error(error);
+    } catch (error) {
+      const catchError = error as Error;
+      throw new Error(catchError.message);
     }
   }
 

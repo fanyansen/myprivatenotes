@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { SchemaLogin, UserLogin } from "./type";
+import { SchemaLogin, UserLogin } from "./types";
 import { schema } from "./schema";
 import { useAppDispatch, useAppSelector } from "../../../hooks/useReduxHooks";
 import { login, selectorState } from "./slice";
@@ -48,12 +48,13 @@ function LoginPage() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <input {...register("email")} />
 
-        <input {...register("password")} />
+        <input {...register("password")} type="password" />
 
         <input type="submit" />
       </form>
       <p>{errors.email?.message}</p>
       <p>{errors.password?.message}</p>
+      {loginState.error && <p>{loginState.error}</p>}
       {/* <p>{error?.message}</p> */}
     </>
   );
