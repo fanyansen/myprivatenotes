@@ -16,7 +16,7 @@ import {
   sendRefreshToken,
 } from "../helpers/generateToken";
 import { Request, Response } from "express";
-import { AppDataSource } from "../lib/dataSource";
+// import { AppDataSource } from "../lib/dataSource";
 import { isAuth } from "../helpers/isAuth";
 import { JwtPayload } from "jsonwebtoken";
 import { CONST } from "../constants/strings";
@@ -123,7 +123,12 @@ export class UserResolver {
     //   "token_version", // one of user column
     //   1
     // );
-    await AppDataSource.getRepository(User).increment(
+    // await AppDataSource.getRepository(User).increment(
+    //   { id: userId! },
+    //   "token_version", // one of user column
+    //   1
+    // );
+    await User.getRepository().increment(
       { id: userId! },
       "token_version", // one of user column
       1
