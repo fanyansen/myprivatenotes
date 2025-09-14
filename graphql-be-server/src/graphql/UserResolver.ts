@@ -19,6 +19,8 @@ import { Request, Response } from "express";
 import { AppDataSource } from "../lib/dataSource";
 import { isAuth } from "../helpers/isAuth";
 import { JwtPayload } from "jsonwebtoken";
+import { CONST } from "../constants/strings";
+// import { getConnection } from "typeorm";
 // import { JwtPayload } from "jsonwebtoken";
 
 export interface TokenPayload extends JwtPayload {
@@ -116,11 +118,22 @@ export class UserResolver {
 
   @Mutation(() => Boolean)
   async revokeUserSession(@Arg("userId") userId: string) {
+    // await getConnection().getRepository(User).increment(
+    //   { id: userId! },
+    //   "token_version", // one of user column
+    //   1
+    // );
     await AppDataSource.getRepository(User).increment(
       { id: userId! },
       "token_version", // one of user column
       1
     );
+    return true;
+  }
+
+  @Mutation(() => Boolean)
+  async logout(@Ctx() ctx: MyContext) {
+    ctx.res.clearCookie(CONST.JWT_COOKIE);
     return true;
   }
 }

@@ -16,7 +16,11 @@ import { MyContext, UserResolver } from "./graphql/UserResolver";
 import { buildSchema } from "type-graphql";
 import { verify } from "jsonwebtoken";
 import { User } from "./entity/User";
-import { generateAccessToken, sendRefreshToken } from "./helpers/generateToken";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  sendRefreshToken,
+} from "./helpers/generateToken";
 import cookieParser from "cookie-parser";
 import { NoteResolver } from "./graphql/NoteResolver";
 
@@ -57,7 +61,7 @@ AppDataSource.initialize()
       const token = req.cookies[CONST.JWT_COOKIE];
       // const failedRes = res.send({ success: false, access_token: "" });
       const sendTokenReq = (access_token: string) =>
-        res.send({ success: false, access_token });
+        res.send({ success: Boolean(access_token.length), access_token });
 
       if (!token) {
         return sendTokenReq("");
@@ -70,16 +74,18 @@ AppDataSource.initialize()
           return sendTokenReq("");
         }
 
+        // To Check If User has been reset password or revoked session
         if (user.token_version !== data.tokenVersion) {
           return sendTokenReq("");
         }
 
         const access_token = generateAccessToken(user);
-        sendRefreshToken(res, generateAccessToken(user));
+        sendRefreshToken(res, generateRefreshToken(user));
 
         // return res.send({ success: false, access_token });
         return sendTokenReq(access_token);
       } catch (error) {
+        console.error(error);
         return sendTokenReq("");
       }
 
