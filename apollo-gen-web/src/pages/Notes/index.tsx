@@ -24,7 +24,22 @@ function Notes() {
     return <div>Loading...</div>;
   }
 
-  return <div>Notes</div>;
+  return (
+    <>
+      <div>All Notes</div>
+      <br />
+      {data?.listNotes?.map((note) => (
+        <div key={note?.id}>
+          <h3>Title: {note?.title}</h3>
+          <p>Content: {note?.content}</p>
+          <p>Created by: {note?.created_by?.email}</p>
+          <p>Created at: {new Date(note?.created_at!).toLocaleString()}</p>
+          <hr />
+        </div>
+      ))}
+      <br />
+    </>
+  );
 }
 
 export default memo(Notes);
