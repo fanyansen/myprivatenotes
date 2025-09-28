@@ -26,3 +26,7 @@ export type LoginState = {
   data: Partial<LoginResponse>;
   error: string | null;
 };
+export type LoginRes = {
+  access_token: string;
+  refresh_token: string;
+};

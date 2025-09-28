@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { LoginResponse } from "../../../generated/graphql";
 import { LoginState, UserLogin } from "./types";
 import { PickNullable } from "../../../types/custom";
@@ -11,9 +11,9 @@ const initialState: LoginState = {
   error: null,
 };
 
-export const login = createAsyncThunk<PickNullable<LoginResponse>, UserLogin>(
+export const login = createAsyncThunk<LoginResponse, UserLogin>(
   "users/login",
-  async (params: UserLogin, { rejectWithValue }) => {
+  async (params, { rejectWithValue }) => {
     const { data: paramData, mutate } = params;
 
     try {
@@ -28,7 +28,7 @@ export const login = createAsyncThunk<PickNullable<LoginResponse>, UserLogin>(
         return rejectWithValue(errorMessage);
       }
 
-      return data?.login;
+      return data?.login as LoginResponse;
     } catch (error) {
       const errorObj = error as Error;
       // Catch other network or server errors
@@ -55,14 +55,17 @@ const userLoginSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(login.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.loading = false;
-        state.error = null;
+      .addCase(
+        login.fulfilled,
+        (state, action: PayloadAction<PickNullable<LoginResponse>>) => {
+          state.status = "succeeded";
+          state.loading = false;
+          state.error = null;
 
-        console.log(action.payload);
-        state.data = action.payload;
-      })
+          console.log(action.payload);
+          state.data = action.payload;
+        }
+      )
       .addCase(login.rejected, (state, action) => {
         state.status = "failed";
         state.loading = false;

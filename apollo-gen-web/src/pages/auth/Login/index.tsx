@@ -1,10 +1,11 @@
 import React from "react";
+import { Navigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { SchemaLogin } from "./types";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { schema } from "./schema";
 import { useLoginSiniMutation } from "../../../generated/graphql";
-// import { useNavigate } from "react-router-dom";
+import { isAuthenticated, saveToken } from "../../../lib/auth";
 
 function LoginPage() {
   const {
@@ -15,14 +16,27 @@ function LoginPage() {
     mode: "onSubmit",
     resolver: yupResolver(schema),
   });
-  // const navigate = useNavigate();
 
   const [mutateLogin, { data, error, reset }] = useLoginSiniMutation();
 
-  const onSubmit = (data: SchemaLogin) => {
-    mutateLogin({ variables: { ...data }, errorPolicy: "all" });
+  const onSubmit = async (data: SchemaLogin) => {
+    const loginRes = await mutateLogin({
+      variables: { ...data },
+      errorPolicy: "all",
+    });
+
+    const { data: loginResponseData } = loginRes;
+
+    saveToken(loginResponseData?.login?.access_token!);
+
+    return <Navigate to="/" />;
   };
 
+  if (isAuthenticated()) {
+    return <Navigate to="/" />;
+  }
+
+  console.log(errors);
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>

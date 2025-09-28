@@ -28,6 +28,7 @@ export type Mutation = {
   addNote: Note;
   deleteNote: Scalars['Boolean']['output'];
   login: LoginResponse;
+  logout: Scalars['Boolean']['output'];
   revokeUserSession: Scalars['Boolean']['output'];
   signUp: Scalars['Boolean']['output'];
   updateNote: Note;
@@ -90,9 +91,15 @@ export type User = {
   __typename?: 'User';
   email: Scalars['String']['output'];
   id: Scalars['String']['output'];
+  notes: Array<Note>;
   token_version: Scalars['Int']['output'];
   username: Scalars['String']['output'];
 };
+
+export type ListNotesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ListNotesQuery = { __typename?: 'Query', listNotes: Array<{ __typename?: 'Note', id: string, title: string, content: string, created_at: string, updated_at: string, created_by: { __typename?: 'User', id: string, username: string, email: string } }> };
 
 export type LoginSiniMutationVariables = Exact<{
   email: Scalars['String']['input'];
@@ -101,6 +108,11 @@ export type LoginSiniMutationVariables = Exact<{
 
 
 export type LoginSiniMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', access_token: string, refresh_token: string } };
+
+export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
 
 export type DaftarSiniMutationVariables = Exact<{
   email: Scalars['String']['input'];
@@ -111,6 +123,49 @@ export type DaftarSiniMutationVariables = Exact<{
 export type DaftarSiniMutation = { __typename?: 'Mutation', signUp: boolean };
 
 
+export const ListNotesDocument = gql`
+    query ListNotes {
+  listNotes {
+    id
+    title
+    content
+    created_by {
+      id
+      username
+      email
+    }
+    created_at
+    updated_at
+  }
+}
+    `;
+
+/**
+ * __useListNotesQuery__
+ *
+ * To run a query within a React component, call `useListNotesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListNotesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListNotesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useListNotesQuery(baseOptions?: Apollo.QueryHookOptions<ListNotesQuery, ListNotesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ListNotesQuery, ListNotesQueryVariables>(ListNotesDocument, options);
+      }
+export function useListNotesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ListNotesQuery, ListNotesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ListNotesQuery, ListNotesQueryVariables>(ListNotesDocument, options);
+        }
+export type ListNotesQueryHookResult = ReturnType<typeof useListNotesQuery>;
+export type ListNotesLazyQueryHookResult = ReturnType<typeof useListNotesLazyQuery>;
+export type ListNotesQueryResult = Apollo.QueryResult<ListNotesQuery, ListNotesQueryVariables>;
 export const LoginSiniDocument = gql`
     mutation LoginSini($email: String!, $password: String!) {
   login(email: $email, password: $password) {
@@ -146,6 +201,36 @@ export function useLoginSiniMutation(baseOptions?: Apollo.MutationHookOptions<Lo
 export type LoginSiniMutationHookResult = ReturnType<typeof useLoginSiniMutation>;
 export type LoginSiniMutationResult = Apollo.MutationResult<LoginSiniMutation>;
 export type LoginSiniMutationOptions = Apollo.BaseMutationOptions<LoginSiniMutation, LoginSiniMutationVariables>;
+export const LogoutDocument = gql`
+    mutation Logout {
+  logout
+}
+    `;
+export type LogoutMutationFn = Apollo.MutationFunction<LogoutMutation, LogoutMutationVariables>;
+
+/**
+ * __useLogoutMutation__
+ *
+ * To run a mutation, you first call `useLogoutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLogoutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [logoutMutation, { data, loading, error }] = useLogoutMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<LogoutMutation, LogoutMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument, options);
+      }
+export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
+export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
+export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
 export const DaftarSiniDocument = gql`
     mutation DaftarSini($email: String!, $password: String!) {
   signUp(email: $email, password: $password)
