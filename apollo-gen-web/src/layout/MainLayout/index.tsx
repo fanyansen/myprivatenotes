@@ -5,7 +5,7 @@ import { clearToken, isAuthenticated } from "../../lib/auth";
 import { useLogoutMutation } from "../../generated/graphql";
 
 function MainLayout() {
-  const [submitLogout, { client }] = useLogoutMutation();
+  const [submitLogout, { client, error }] = useLogoutMutation();
   const navigate = useNavigate();
 
   const navigateToLoginPage = () => <Navigate to="/login" />;
@@ -27,6 +27,7 @@ function MainLayout() {
     <>
       <Outlet />
       <button onClick={onLogoutHandler}>Log Out</button>
+      {error || ""}
     </>
   );
 }

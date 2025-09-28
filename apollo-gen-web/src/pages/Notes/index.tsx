@@ -37,6 +37,7 @@ function Notes() {
           <hr />
         </div>
       ))}
+      {error || ""}
       <br />
     </>
   );
