@@ -21,7 +21,7 @@
 .env.production.local
 
 # generated files
-/src/generated/graphql.tsx
+/src/generated
 
 npm-debug.log*
 yarn-debug.log*
