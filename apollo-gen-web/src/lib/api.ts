@@ -14,7 +14,6 @@ import { getToken, isAuthenticated, saveToken } from "./auth";
 // import { getToken } from "./auth";
 import { MutationBaseOptions } from "@apollo/client/core/watchQueryOptions";
 import { TokenRefreshLink } from "apollo-link-token-refresh";
-import Cookies from "js-cookie";
 
 const errorLink = new ErrorLink(
   ({ graphQLErrors, networkError, operation, forward }) => {
@@ -65,11 +64,13 @@ const fetchOptions: MutationBaseOptions = { errorPolicy: "all" };
 
 const refreshLink = new TokenRefreshLink({
   accessTokenField: "access_token",
-  isTokenValidOrUndefined: async () => {
-    if (!Cookies.get("myprivatenotes-jwt")) {
+  isTokenValidOrUndefined: async (operation) => {
+    // Don't check token validity for login operation
+    if (operation.operationName === "LoginSini") {
       return true;
     }
 
+    // Check if token is valid
     return isAuthenticated();
   },
   fetchAccessToken: () => {
