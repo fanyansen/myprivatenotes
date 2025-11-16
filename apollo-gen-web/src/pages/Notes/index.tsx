@@ -1,16 +1,22 @@
 import React, { memo, useEffect } from "react";
 import {
-  // useListNotesLazyQuery,
+  useDeleteNoteMutation,
+  useListNotesLazyQuery,
   useListNotesQuery,
 } from "../../generated/graphql";
+import { Link } from "react-router-dom";
 
 function Notes() {
-  const { data, loading, error } = useListNotesQuery();
-  // const [fetch, { data, loading, error }] = useListNotesLazyQuery();
+  const { data, loading, error, refetch } = useListNotesQuery();
+  // const [, { data, loading, error, refetch }] = useListNotesLazyQuery();
 
-  // useEffect(() => {
-  //   fetch();
-  // }, [fetch]);
+  const [deleteNote, deleteState] = useDeleteNoteMutation({
+    onCompleted: () => refetch(),
+  });
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   useEffect(() => {
     if (error) {
@@ -18,15 +24,22 @@ function Notes() {
     }
   }, [error]);
 
-  console.log(data);
-  console.log(error);
+  // console.log("useListNotesQuery()", useListNotesQuery());
+  // console.log("useDeleteNoteMutation()", useDeleteNoteMutation());
+  // console.log("deleteNoteRes", deleteNoteRes);
+  console.log("deleteState", deleteState);
+  // console.log(data);
+  // console.log(error);
   if (loading) {
     return <div>Loading...</div>;
   }
 
   return (
     <>
-      <div>All Notes</div>
+      <p>All Notes</p>
+      <Link to="/notes/new">
+        <button>Create New Note</button>
+      </Link>
       <br />
       {data?.listNotes?.map((note) => (
         <div key={note?.id}>
@@ -34,6 +47,19 @@ function Notes() {
           <p>Content: {note?.content}</p>
           <p>Created by: {note?.created_by?.email}</p>
           <p>Created at: {new Date(note?.created_at!).toLocaleString()}</p>
+          <p>
+            <Link to={`/notes/edit/${note?.id}`}>
+              <button>Edit Note</button>
+            </Link>
+
+            <button
+              onClick={() => {
+                deleteNote({ variables: { id: note?.id } });
+              }}
+            >
+              Delete Note
+            </button>
+          </p>
           <hr />
         </div>
       ))}

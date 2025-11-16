@@ -1,12 +1,11 @@
-query ListNotes {
-  listNotes {
+query ListNotes($listNotesParams: ListNotesParams) {
+  listNotes(params: $listNotesParams) {
     id
     title
     content
     created_by {
-      id
-      username
       email
+      username
     }
     created_at
     updated_at

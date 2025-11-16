@@ -108,6 +108,7 @@ AppDataSource.initialize()
 
       schema: await buildSchema({
         resolvers: [UserResolver, NoteResolver],
+        validate: true, // Enable 'class-validator' integration
       }),
       context: ({ req, res }: MyContext): MyContext => ({ req, res }),
       introspection: process.env.NODE_ENV !== "production",

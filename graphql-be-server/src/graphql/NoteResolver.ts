@@ -11,12 +11,84 @@ import { isAuth } from "../helpers/isAuth";
 import { MyContext } from "./UserResolver";
 import { User } from "../entity/User";
 
+// To ignore Case Sensitive
+import { ILike } from "typeorm";
+
+import { ListNotesParams } from "../types/note";
+
 @Resolver()
 export class NoteResolver {
   @Query(() => [Note])
   @UseMiddleware(isAuth)
-  async listNotes() {
-    return Note.find({ relations: ["created_by"] });
+  async listNotes(
+    @Ctx() ctx: MyContext,
+    @Arg("params", { nullable: true }) params?: ListNotesParams
+  ) {
+    try {
+      return Note.find({
+        relations: ["created_by"],
+        // where: {
+        //   title: ILike(`%${params?.search}%`),
+        //   created_by: { id: ctx.tokenPayload?.userId },
+        // },
+        // ...(params?.search?.length
+        //   ? {
+        //       where: {
+        //         title: ILike(`%${params?.search}%`),
+        //         created_by: { id: ctx.tokenPayload?.userId },
+        //       },
+        //     }
+        //   : {}),
+        // ...(params?.search?.length
+        //   ? {
+        //       where: [
+        //         {
+        //           title: ILike(`%${params?.search}%`),
+        //           created_by: { id: ctx.tokenPayload?.userId },
+        //         },
+        //         {
+        //           content: ILike(`%${params?.search}%`),
+        //           created_by: { id: ctx.tokenPayload?.userId },
+        //         },
+        //       ],
+        //     }
+        //   : {}),
+        // where: {
+        //   title: params?.search ? ILike(`%${params?.search}%`) : undefined,
+        //   created_by: { id: ctx.tokenPayload?.userId },
+        // },
+        where: [
+          {
+            title: params?.search ? ILike(`%${params?.search}%`) : undefined,
+            created_by: { id: ctx.tokenPayload?.userId },
+          },
+          {
+            content: params?.search ? ILike(`%${params?.search}%`) : undefined,
+            created_by: { id: ctx.tokenPayload?.userId },
+          },
+        ],
+        order: {
+          created_at: "DESC",
+        },
+      });
+    } catch (error) {
+      const catchError = error as Error;
+      throw new Error(catchError.message);
+    }
+  }
+
+  @Query(() => Note)
+  @UseMiddleware(isAuth)
+  async getNoteById(@Arg("noteId") noteId: string) {
+    try {
+      return Note.findOne({
+        where: { id: noteId },
+        relations: ["created_by"],
+      });
+    } catch (error) {
+      const catchError = error as Error;
+      throw new Error(catchError.message);
+    }
   }
 
   @Mutation(() => Note)
