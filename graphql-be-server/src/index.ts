@@ -46,7 +46,7 @@ AppDataSource.initialize()
     // Express Middlewares
     app.use(
       cors({
-        origin: ["http://localhost:3000", "http://localhost:3003"],
+        origin: CONST.REACT_WEB,
         credentials: true,
       })
     );
@@ -54,7 +54,7 @@ AppDataSource.initialize()
     app.use(morgan("dev"));
 
     app.get("/", (_req, res) => {
-      res.send("Hello World");
+      res.send("Hello World www");
     });
 
     app.post("/refresh-token", async (req, res) => {

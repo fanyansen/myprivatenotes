@@ -1,1 +1,1 @@
-export const TOKEN = "myprivatenotes-token";
+export const TOKEN = process.env.REACT_APP_TOKEN!;

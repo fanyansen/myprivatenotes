@@ -1,0 +1,55 @@
+services:
+  mysql:
+    image: "mysql:8.4"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - myprivatenotes
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  server:
+    image: api-server
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./graphql-be-server:/usr/app
+      - /usr/app/node_modules
+    environment:
+      MYSQL_HOST_IP: mysql
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - myprivatenotes
+    restart: unless-stopped
+
+  web:
+    image: react-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./apollo-gen-web:/usr/app
+      - /usr/app/node_modules
+    depends_on:
+      - server
+
+volumes:
+  mysql-data:
+    driver: local
+
+networks:
+  myprivatenotes:
+    driver: bridge
