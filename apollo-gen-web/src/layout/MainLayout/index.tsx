@@ -18,7 +18,7 @@ function MainLayout() {
 
   const onLogoutHandler = async () => {
     await submitLogout();
-    client.resetStore();
+    await client.resetStore();
     clearToken();
 
     navigate("/login");
