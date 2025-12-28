@@ -7,7 +7,7 @@ import {
   useAddNewNoteMutation,
   useNoteByIdQuery,
   useUpdateNoteMutation,
-} from "../../../../generated/graphql";
+} from "../../../../../generated/graphql";
 import { use, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
